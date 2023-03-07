@@ -4,7 +4,7 @@
   "description": "Viewport-aware autoplaying video component for use in React projects.",
   "main": "dist/main.mjs",
   "scripts": {
-    "build": "webpack --config ./webpack.config.js --mode production"
+    "build": "rm -rf ./dist && webpack --config ./webpack.config.js --mode production"
   },
   "keywords": [
     "react",
