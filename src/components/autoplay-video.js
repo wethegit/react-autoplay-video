@@ -67,7 +67,7 @@ export const AutoplayVideo = ({
         })}
     >
       {prefersReducedMotion && renderReducedMotionFallback ? (
-        renderReducedMotionFallback()
+        <div className="autoplay-video__media">{renderReducedMotionFallback()}</div>
       ) : (
         <>
           {descriptionID && (
