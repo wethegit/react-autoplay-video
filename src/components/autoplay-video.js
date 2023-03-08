@@ -14,17 +14,17 @@ export const AutoplayVideo = ({
   className,
   description,
   height,
-  lazyLoadRootMargin,
+  inViewRootMargin,
+  paused,
   posterImg,
   prefersReducedMotion,
   renderReducedMotionFallback,
   src,
   width,
 }) => {
-  // "loaded" is a loose term. This just refers to whether the video's src tag has already been placed in the DOM:
-  const [loaded, setLoaded] = useState(false)
+  const [srcAdded, setSrcAdded] = useState(false)
   const [setInViewRef, isInView] = useInView(
-    { threshold: 0, rootMargin: lazyLoadRootMargin },
+    { threshold: 0, rootMargin: inViewRootMargin },
     false
   )
   // gets us a unique ID for the video description:
@@ -39,21 +39,24 @@ export const AutoplayVideo = ({
   }
 
   const playVideo = () => {
-    if (!videoRef.current) return
+    if (!videoRef.current || paused) return
     videoRef.current.play()
   }
 
   // Set a flag to load the content (video or fallback), based on its visibility.
   useEffect(() => {
-    if (isInView) setLoaded(true)
+    if (isInView) setSrcAdded(true)
   }, [isInView])
 
-  // ensure the video does not continue to play when off-screen
+  // Ensure the video does not continue to play when off-screen.
+  // Play/pause the video based on the `paused` override prop.
   useEffect(() => {
-    if (!loaded) return
-    if (isInView) playVideo()
+    if (!srcAdded) return
+
+    if (paused) pauseVideo()
+    else if (isInView && !paused) playVideo()
     else pauseVideo()
-  }, [isInView, loaded])
+  }, [isInView, srcAdded, paused, prefersReducedMotion])
 
   return (
     <div
@@ -84,7 +87,7 @@ export const AutoplayVideo = ({
             playsInline
             poster={posterImg}
             ref={videoRef}
-            src={loaded ? src : null}
+            src={srcAdded ? src : null}
           />
         </>
       )}
@@ -94,7 +97,8 @@ export const AutoplayVideo = ({
 
 AutoplayVideo.defaultProps = {
   description: "",
-  lazyLoadRootMargin: "0px 0px 400px 0px",
+  inViewRootMargin: "0px 0px 400px 0px",
+  paused: false,
   prefersReducedMotion: false,
 }
 
@@ -102,7 +106,8 @@ AutoplayVideo.propTypes = {
   className: PropTypes.string,
   description: PropTypes.string,
   height: PropTypes.number.isRequired,
-  lazyLoadRootMargin: PropTypes.string.isRequired,
+  inViewRootMargin: PropTypes.string.isRequired,
+  paused: PropTypes.bool,
   posterImg: PropTypes.string,
   prefersReducedMotion: PropTypes.bool.isRequired,
   renderReducedMotionFallback: PropTypes.func,
