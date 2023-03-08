@@ -95,6 +95,7 @@ export const AutoplayVideo = ({
 AutoplayVideo.defaultProps = {
   description: "",
   lazyLoadRootMargin: "0px 0px 400px 0px",
+  prefersReducedMotion: false,
 }
 
 AutoplayVideo.propTypes = {
