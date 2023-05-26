@@ -19,7 +19,7 @@ npm install @wethegit/react-autoplay-video
 Import this wherever it makes sense to, based on your project structure:
 
 ```bash
-import "@wethegit/react-autoplay-video/dist/main.css"
+import "@wethegit/react-autoplay-video/style.css"
 ```
 
 ## Usage
