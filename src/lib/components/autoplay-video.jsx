@@ -10,97 +10,99 @@ import { makeHash } from "../utils/make-hash"
 // styles
 import "./autoplay-video.css"
 
-const AutoplayVideo = (
-  {
-    className,
-    description,
-    height,
-    inViewRootMargin,
-    paused,
-    posterImg,
-    prefersReducedMotion,
-    renderReducedMotionFallback,
-    src,
-    width,
-  },
-  inputRef
-) => {
-  const [srcAdded, setSrcAdded] = useState(false)
-  const [setInViewRef, isInView] = useInView(
-    { threshold: 0, rootMargin: inViewRootMargin },
-    false
-  )
-  // gets us a unique ID for the video description:
-  const descriptionID = description
-    ? `autoplay-video-desc-${makeHash(description)}`
-    : null
+const AutoplayVideo = forwardRef(
+  (
+    {
+      className,
+      description,
+      height,
+      inViewRootMargin,
+      paused,
+      posterImg,
+      prefersReducedMotion,
+      renderReducedMotionFallback,
+      src,
+      width,
+    },
+    inputRef
+  ) => {
+    const [srcAdded, setSrcAdded] = useState(false)
+    const [setInViewRef, isInView] = useInView(
+      { threshold: 0, rootMargin: inViewRootMargin },
+      false
+    )
+    // gets us a unique ID for the video description:
+    const descriptionID = description
+      ? `autoplay-video-desc-${makeHash(description)}`
+      : null
 
-  const localRef = useRef()
-  const videoRef = inputRef ? inputRef : localRef
+    const localRef = useRef()
+    const videoRef = inputRef ? inputRef : localRef
 
-  const pauseVideo = () => {
-    if (!videoRef.current) return
-    videoRef.current.pause()
+    const pauseVideo = () => {
+      if (!videoRef.current) return
+      videoRef.current.pause()
+    }
+
+    const playVideo = () => {
+      if (!videoRef.current || paused) return
+      videoRef.current.play()
+    }
+
+    // Set a flag to load the content (video or fallback), based on its visibility.
+    useEffect(() => {
+      if (isInView) setSrcAdded(true)
+    }, [isInView])
+
+    // Ensure the video does not continue to play when off-screen.
+    // Play/pause the video based on the `paused` override prop.
+    useEffect(() => {
+      if (!srcAdded) return
+
+      if (paused) pauseVideo()
+      else if (isInView && !paused) playVideo()
+      else pauseVideo()
+
+      /* eslint-disable-next-line */
+    }, [isInView, srcAdded, paused, prefersReducedMotion])
+
+    return (
+      <div
+        ref={setInViewRef}
+        className={classnames(["autoplay-video", className])}
+        {...(width &&
+          height && {
+            style: {
+              "--aspect-ratio": `${parseFloat((height / width).toFixed(4)) * 100}%`,
+            },
+          })}
+      >
+        {prefersReducedMotion && renderReducedMotionFallback ? (
+          <div className="autoplay-video__media">{renderReducedMotionFallback()}</div>
+        ) : (
+          <>
+            {descriptionID && (
+              <p id={descriptionID} className="autoplay-video-util-visually-hidden">
+                {description}
+              </p>
+            )}
+            <video
+              aria-describedby={descriptionID}
+              autoPlay
+              className="autoplay-video__media"
+              loop
+              muted
+              playsInline
+              poster={posterImg}
+              ref={videoRef}
+              src={srcAdded ? src : null}
+            />
+          </>
+        )}
+      </div>
+    )
   }
-
-  const playVideo = () => {
-    if (!videoRef.current || paused) return
-    videoRef.current.play()
-  }
-
-  // Set a flag to load the content (video or fallback), based on its visibility.
-  useEffect(() => {
-    if (isInView) setSrcAdded(true)
-  }, [isInView])
-
-  // Ensure the video does not continue to play when off-screen.
-  // Play/pause the video based on the `paused` override prop.
-  useEffect(() => {
-    if (!srcAdded) return
-
-    if (paused) pauseVideo()
-    else if (isInView && !paused) playVideo()
-    else pauseVideo()
-
-    /* eslint-disable-next-line */
-  }, [isInView, srcAdded, paused, prefersReducedMotion])
-
-  return (
-    <div
-      ref={setInViewRef}
-      className={classnames(["autoplay-video", className])}
-      {...(width &&
-        height && {
-          style: {
-            "--aspect-ratio": `${parseFloat((height / width).toFixed(4)) * 100}%`,
-          },
-        })}
-    >
-      {prefersReducedMotion && renderReducedMotionFallback ? (
-        <div className="autoplay-video__media">{renderReducedMotionFallback()}</div>
-      ) : (
-        <>
-          {descriptionID && (
-            <p id={descriptionID} className="autoplay-video-util-visually-hidden">
-              {description}
-            </p>
-          )}
-          <video
-            aria-describedby={descriptionID}
-            autoPlay
-            className="autoplay-video__media"
-            loop
-            muted
-            playsInline
-            poster={posterImg}
-            ref={videoRef}
-            src={srcAdded ? src : null}
-          />
-        </>
-      )}
-    </div>
-  )
-}
+)
 
 AutoplayVideo.defaultProps = {
   description: "",
@@ -122,4 +124,6 @@ AutoplayVideo.propTypes = {
   width: PropTypes.number.isRequired,
 }
 
-export default forwardRef(AutoplayVideo)
+AutoplayVideo.displayName = "AutoplayVideo"
+
+export default AutoplayVideo
