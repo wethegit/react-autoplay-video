@@ -1,11 +1,11 @@
 /* eslint-disable react/prop-types */
 
-import React from "react"
+import React, { useCallback, useEffect, useRef, useState } from "react"
 import ReactDOM from "react-dom"
 import { AutoplayVideo } from "./lib"
 
 function App() {
-  const [videoRef, setVideoRef] = React.useState()
+  const [videoRef, setVideoRef] = useState()
 
   return (
     <>
@@ -37,21 +37,20 @@ function App() {
  * when the video is considered to be "in view" (per the ovbserver options).
  */
 function DebugStats({ videoElement }) {
-  const rafId = React.useRef()
-  const timeRef = React.useRef()
+  const rafId = useRef()
+  const timeRef = useRef()
 
-  const updateStats = React.useCallback(() => {
-    if (!videoElement && rafId.current !== undefined) {
-      cancelAnimationFrame(rafId.current)
-      return
-    }
+  const updateStats = useCallback(() => {
+    if (!videoElement) return
 
     timeRef.current.innerHTML = videoElement.currentTime
     requestAnimationFrame(updateStats)
   }, [videoElement])
 
-  React.useEffect(() => {
+  useEffect(() => {
     rafId.current = requestAnimationFrame(updateStats)
+
+    return () => cancelAnimationFrame(rafId.current)
   }, [updateStats])
 
   if (!videoElement) return null
