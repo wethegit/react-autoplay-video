@@ -59,7 +59,7 @@ const YourComponent = () => {
 
 ## Styling
 
-This component uses the [BEM methodology](https://getbem.com/) for CSS classNames — the block here being `.autoplay-video`. While you aren't likely to need too many style overrides, you will want to import the stylesheet into your app, as it helps with responsiveness and maintaining aspect ratio.
+This component uses the [BEM methodology](https://getbem.com/) for CSS `classNames` — the block here being `.autoplay-video`. While you aren't likely to need too many style overrides, you will want to import the stylesheet into your app, as it helps with responsiveness and maintaining aspect ratio. The default aspect-ratio is configured to display a 16:9 video. You can overwrite that by setting the `--aspect-ratio` CSS variable on the component.
 
 ## Accessibility
 
