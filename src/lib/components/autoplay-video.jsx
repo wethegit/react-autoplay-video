@@ -15,14 +15,12 @@ const AutoplayVideo = forwardRef(
     {
       className,
       description,
-      height,
       inViewRootMargin,
       paused,
       posterImg,
       prefersReducedMotion,
       renderReducedMotionFallback,
       src,
-      width,
     },
     inputRef
   ) => {
@@ -67,16 +65,7 @@ const AutoplayVideo = forwardRef(
     }, [isInView, srcAdded, paused, prefersReducedMotion])
 
     return (
-      <div
-        ref={setInViewRef}
-        className={classnames(["autoplay-video", className])}
-        {...(width &&
-          height && {
-            style: {
-              "--aspect-ratio": `${parseFloat((height / width).toFixed(4)) * 100}%`,
-            },
-          })}
-      >
+      <div ref={setInViewRef} className={classnames(["autoplay-video", className])}>
         {prefersReducedMotion && renderReducedMotionFallback ? (
           <div className="autoplay-video__media">{renderReducedMotionFallback()}</div>
         ) : (
@@ -114,14 +103,12 @@ AutoplayVideo.defaultProps = {
 AutoplayVideo.propTypes = {
   className: PropTypes.string,
   description: PropTypes.string,
-  height: PropTypes.number.isRequired,
   inViewRootMargin: PropTypes.string.isRequired,
   paused: PropTypes.bool,
   posterImg: PropTypes.string,
   prefersReducedMotion: PropTypes.bool.isRequired,
   renderReducedMotionFallback: PropTypes.func,
   src: PropTypes.string,
-  width: PropTypes.number.isRequired,
 }
 
 AutoplayVideo.displayName = "AutoplayVideo"
