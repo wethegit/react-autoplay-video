@@ -14,8 +14,21 @@ function App() {
         src="/example-assets/example-video.mp4"
         posterImg="/example-assets/example-fallback.jpg"
         description="This is a description of the video."
-        width={16}
-        height={9}
+        prefersReducedMotion={false}
+        renderReducedMotionFallback={() => (
+          <img
+            src="/example-assets/example-fallback.jpg"
+            alt="Description of the fallback image."
+          />
+        )}
+      />
+
+      <AutoplayVideo
+        ref={setVideoRef}
+        src="/example-assets/example-video.mp4"
+        posterImg="/example-assets/example-fallback.jpg"
+        description="This is a description of the video."
+        loop={false}
         prefersReducedMotion={false}
         renderReducedMotionFallback={() => (
           <img

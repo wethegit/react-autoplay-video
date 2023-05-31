@@ -21,6 +21,7 @@ const AutoplayVideo = forwardRef(
       prefersReducedMotion,
       renderReducedMotionFallback,
       src,
+      loop = true,
     },
     inputRef
   ) => {
@@ -79,7 +80,7 @@ const AutoplayVideo = forwardRef(
               aria-describedby={descriptionID}
               autoPlay
               className="autoplay-video__media"
-              loop
+              loop={loop}
               muted
               playsInline
               poster={posterImg}
@@ -98,6 +99,7 @@ AutoplayVideo.defaultProps = {
   inViewRootMargin: "0px 0px 400px 0px",
   paused: false,
   prefersReducedMotion: false,
+  loop: true,
 }
 
 AutoplayVideo.propTypes = {
@@ -109,6 +111,7 @@ AutoplayVideo.propTypes = {
   prefersReducedMotion: PropTypes.bool.isRequired,
   renderReducedMotionFallback: PropTypes.func,
   src: PropTypes.string,
+  loop: PropTypes.bool,
 }
 
 AutoplayVideo.displayName = "AutoplayVideo"
