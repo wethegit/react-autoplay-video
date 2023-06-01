@@ -1,6 +1,6 @@
 {
   "name": "@wethegit/react-autoplay-video",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Viewport-aware auto-playing video component for use in React projects.",
   "files": [
     "dist"
