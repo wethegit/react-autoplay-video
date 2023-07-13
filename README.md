@@ -25,6 +25,8 @@ import "@wethegit/react-autoplay-video/style.css"
 ## Usage
 
 ```jsx
+import { AutoplayVideo } from "@wethegit/react-autoplay-video"
+
 const YourComponent = () => {
   const prefersReducedMotion = window.matchMedia(
     "(prefers-reduced-motion: reduce)"
