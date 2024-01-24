@@ -19,7 +19,7 @@
   },
   "scripts": {
     "prepare": "node -e \"try { require('husky').install() } catch (e) {if (e.code !== 'MODULE_NOT_FOUND') throw e}\"",
-    "dev": "vite",
+    "start": "vite",
     "build": "npm run lint:scripts && npm run lint:styles && vite build",
     "lint:scripts": "eslint --fix --ext .jsx,js --ignore-path .gitignore .",
     "lint:styles": "stylelint src/**/*.{css,scss}"
