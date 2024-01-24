@@ -1,7 +1,6 @@
 /* eslint-disable react/prop-types */
-
 import React, { useCallback, useEffect, useRef, useState } from "react"
-import ReactDOM from "react-dom"
+import ReactDOM from "react-dom/client"
 import { AutoplayVideo } from "./lib"
 
 function App() {
@@ -82,9 +81,8 @@ function DebugStats({ videoElement }) {
   )
 }
 
-ReactDOM.render(
+ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <App />
-  </React.StrictMode>,
-  document.getElementById("root")
+  </React.StrictMode>
 )

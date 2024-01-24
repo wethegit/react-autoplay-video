@@ -15,7 +15,6 @@ const AutoplayVideo = forwardRef(
     {
       className,
       description,
-      inViewRootMargin,
       paused,
       posterImg,
       prefersReducedMotion,
@@ -26,10 +25,7 @@ const AutoplayVideo = forwardRef(
     inputRef
   ) => {
     const [srcAdded, setSrcAdded] = useState(false)
-    const [setInViewRef, isInView] = useInView(
-      { threshold: 0, rootMargin: inViewRootMargin },
-      false
-    )
+    const [setInViewRef, isInView] = useInView(0)
     // gets us a unique ID for the video description:
     const descriptionID = description
       ? `autoplay-video-desc-${makeHash(description)}`
@@ -105,7 +101,6 @@ AutoplayVideo.defaultProps = {
 AutoplayVideo.propTypes = {
   className: PropTypes.string,
   description: PropTypes.string,
-  inViewRootMargin: PropTypes.string.isRequired,
   paused: PropTypes.bool,
   posterImg: PropTypes.string,
   prefersReducedMotion: PropTypes.bool.isRequired,
