@@ -1,6 +1,6 @@
 import { defineConfig } from "vite"
 import { resolve } from "node:path"
-import react from "@vitejs/plugin-react-swc"
+import react from "@vitejs/plugin-react"
 import dts from "vite-plugin-dts"
 
 // https://vitejs.dev/config/
@@ -12,7 +12,7 @@ export default defineConfig({
     lib: {
       // Could also be a dictionary or array of multiple entry points
       // eslint-disable-next-line no-undef
-      entry: resolve(__dirname, "src/lib/index.ts"),
+      entry: resolve(import.meta.dirname, "src/lib/index.ts"),
       name: "ReactAutoplayVideo",
       formats: ["es", "cjs"],
     },
