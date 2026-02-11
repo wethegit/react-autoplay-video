@@ -93,7 +93,7 @@ export function AutoplayVideo({
       {...props}
       ref={setInViewRef}
     >
-      {prefersReducedMotion && renderReducedMotionFallback ? (
+      {prefersReducedMotion && typeof renderReducedMotionFallback === "function" ? (
         <div className={styles["autoplay-video__media"]}>
           {renderReducedMotionFallback()}
         </div>
