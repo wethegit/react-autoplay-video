@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import React, { useCallback, useEffect, useRef } from "react"
 import ReactDOM from "react-dom/client"
 import { AutoplayVideo } from "./lib"
