@@ -60,7 +60,7 @@
   "author": "Andrew Rubin <andrew@wethecollective.com> (https://wethecollective.com)",
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "~20.17.0",
+    "@types/node": "~20.19.33",
     "@types/react": "19.2.18",
     "@types/react-dom": "19.2.5",
     "@typescript-eslint/eslint-plugin": "~5.62.0",
