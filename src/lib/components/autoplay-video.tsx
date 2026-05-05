@@ -105,6 +105,7 @@ export function AutoplayVideo({
             </p>
           )}
           <video
+            tabIndex={-1}
             aria-describedby={descriptionID}
             autoPlay
             className={styles["autoplay-video__media"]}
