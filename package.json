@@ -1,6 +1,6 @@
 {
   "name": "@wethegit/react-autoplay-video",
-  "version": "3.0.0",
+  "version": "2.0.2",
   "description": "Viewport-aware auto-playing video component for use in React projects.",
   "files": [
     "dist"
@@ -98,7 +98,6 @@
   "dependencies": {
     "@changesets/changelog-github": "~0.5.0",
     "@changesets/cli": "~2.27.1",
-    "@wethegit/react-autoplay-video": "~2.0.2",
     "@wethegit/react-hooks": "^3.1.1"
   }
 }
