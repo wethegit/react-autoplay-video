@@ -1,5 +1,11 @@
 # @wethegit/react-autoplay-video
 
+## 3.0.0
+
+### Major Changes
+
+- 596c4d1: Updates to React version 19.
+
 ## 2.0.0
 
 ### Major Changes
