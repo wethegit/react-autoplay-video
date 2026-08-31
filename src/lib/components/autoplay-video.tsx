@@ -36,6 +36,10 @@ export interface AutoplayVideoProps extends React.ComponentPropsWithRef<"div"> {
    * Video path to use as the video element's src attribute.
    */
   src: string
+  /**
+   * Wether or not to add the loading attribute to the video element.
+   */
+  loading?: "lazy" | "eager"
 }
 
 /**
@@ -51,6 +55,7 @@ export function AutoplayVideo({
   renderReducedMotionFallback,
   src,
   loop = true,
+  loading,
   ...props
 }: AutoplayVideoProps) {
   const [srcAdded, setSrcAdded] = useState(false)
@@ -109,6 +114,7 @@ export function AutoplayVideo({
             aria-describedby={descriptionID}
             autoPlay
             className={styles["autoplay-video__media"]}
+            loading={loading}
             loop={loop}
             muted
             playsInline
