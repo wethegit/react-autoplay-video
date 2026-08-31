@@ -7,6 +7,12 @@ import { classnames } from "../utils/classnames"
 
 import styles from "./autoplay-video.module.css"
 
+declare module "react" {
+  interface VideoHTMLAttributes<T> extends React.HTMLAttributes<T> {
+    loading?: "lazy" | "eager"
+  }
+}
+
 export interface AutoplayVideoProps extends React.ComponentPropsWithRef<"div"> {
   /**
    * Visually-hidden description of the video.
@@ -37,7 +43,7 @@ export interface AutoplayVideoProps extends React.ComponentPropsWithRef<"div"> {
    */
   src: string
   /**
-   * Wether or not to add the loading attribute to the video element.
+   * Whether or not to add the loading attribute to the video element.
    */
   loading?: "lazy" | "eager"
 }
@@ -58,7 +64,7 @@ export function AutoplayVideo({
   loading,
   ...props
 }: AutoplayVideoProps) {
-  const [srcAdded, setSrcAdded] = useState(false)
+  const [srcAdded, setSrcAdded] = useState(loading === "eager")
   const [setInViewRef, isInView] = useInView<HTMLDivElement>(0)
   const descriptionID = useId()
   const videoRef = useRef<HTMLVideoElement | null>(null)
@@ -77,8 +83,13 @@ export function AutoplayVideo({
 
   // Set a flag to load the content (video or fallback), based on its visibility.
   useEffect(() => {
-    if (isInView) setSrcAdded(true)
-  }, [isInView])
+    if (loading === "eager") {
+      setSrcAdded(true)
+      return
+    }
+
+    setSrcAdded(isInView)
+  }, [isInView, loading])
 
   // Ensure the video does not continue to play when off-screen.
   // Play/pause the video based on the `paused` override prop.
