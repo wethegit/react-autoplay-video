@@ -1,5 +1,11 @@
 # @wethegit/react-autoplay-video
 
+## 3.0.1
+
+### Patch Changes
+
+- 29b9353: Adds loading prop, allowing for lazy and eager loading of the video element.
+
 ## 3.0.0
 
 ### Major Changes
