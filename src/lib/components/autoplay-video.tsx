@@ -123,13 +123,15 @@ export function AutoplayVideo({
           <video
             tabIndex={-1}
             aria-describedby={descriptionID}
-            autoPlay
+            autoPlay={!paused && isInView}
             className={styles["autoplay-video__media"]}
             loading={loading}
             loop={loop}
             muted
+            onCanPlay={paused || !isInView ? pauseVideo : playVideo}
             playsInline
             poster={posterImg}
+            preload="auto"
             ref={videoRef}
             src={srcAdded ? src : undefined}
           />
