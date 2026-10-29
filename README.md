@@ -18,7 +18,7 @@ npm install @wethegit/react-autoplay-video
 
 Import this wherever it makes sense to, based on your project structure:
 
-```bash
+```shell
 import "@wethegit/react-autoplay-video/style.css"
 ```
 
@@ -46,20 +46,26 @@ const YourComponent = () => {
   )
 }
 ```
+💡 Note that the inline styles in this snippet are just for the sake of brevity. Don't use inline styles if you don't have to.
 
 ## Props
 
-| Prop                        | Type     | Default value       | Description                                                                                                                                                                                                                                                                                                                                  |
-| --------------------------- | -------- | ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| className                   | String   |                     |                                                                                                                                                                                                                                                                                                                                              |
-| description                 | String   | ""                  | A unique description of the video. A unique hash based on this text will be generated and used as the `aria-describedby` ID for a visually-hidden description of the video in the DOM.                                                                                                                                                       |
-| lazyLoadRootMargin          | String   | "0px 0px 400px 0px" | Optional. The `rootMargin` string, as expected by the browser's [IntersectionObserver API](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API). By default, the component gets a 400-pixel "look-ahead", which means the detection of whether or not the component is in view checks up to 400px below the viewport. |
-| loading                     | String   | "lazy"              | Optional. Set to `"eager"` to load the video immediately. By default, or when set to `"lazy"`, the video source is added when the component enters the viewport.                                                                                                                                                                              |
-| posterImg                   | String   |                     | Optional. The `poster` attribute of the `<video>` element.                                                                                                                                                                                                                                                                                   |
-| prefersReducedMotion        | Boolean  | false               | Whether the user prefers reduced motion. If `true`, the component will check for the `renderReducedMotionFallback` render prop, and use that instead of the default auto-playing video.                                                                                                                                                      |
-| renderReducedMotionFallback | Function |                     | Render prop to provide fallback content when the user has enabled reduced motion. This is most commonly an image, or a paused video with controls.                                                                                                                                                                                           |
-| src                         | String   |                     | The video source file.                                                                                                                                                                                                                                                                                                                       |
-| loop                         | Boolean   |                     | Whether to infitely loop the video.                                                                                                                                                                                                                                                                                                                       |
+| Prop                        | Type                       | Default value | Description |
+| --------------------------- | -------------------------- | ------------- | ----------- |
+| className                   | String                     |               | Class name applied to the wrapper element. |
+| description                 | String                     | `""`          | Video description rendered accessibly and connected to the video with `aria-describedby`. |
+| inViewOptions               | `IntersectionObserverInit` | `{ threshold: 0 }` | Options passed to `IntersectionObserver` to define when the wrapper counts as in view. For example, set `rootMargin` to start loading before it enters the viewport. |
+| keepLoaded                  | Boolean                    | `false`       | Keep the source attached after the video has entered view once. By default, the source is removed when it leaves view. |
+| loading                     | `"lazy" \| "eager"`        | `"lazy"`      | Set to `"eager"` to attach the source immediately. Lazy loading attaches it when the component enters view. |
+| loop                        | Boolean                    | `true`        | Whether the video loops. |
+| paused                      | Boolean                    | `false`       | Whether playback should be paused. |
+| posterImg                   | String                     |               | Value for the video element's `poster` attribute. |
+| prefersReducedMotion        | Boolean                    | `false`       | Render `renderReducedMotionFallback` instead of the video when true. |
+| ref                         | `React.Ref<HTMLDivElement>` |               | Ref to the wrapper element. |
+| renderReducedMotionFallback | Function                   |               | Render prop for alternative content when the user prefers reduced motion. |
+| src                         | String                     |               | Video source file. |
+| videoProps                  | Video attributes | | Additional video props or attributes for the HTML Video element. Playback, source, loading, and accessibility props are managed by this component, so you can't override those. |
+| videoRef                    | `React.Ref<HTMLVideoElement>` |             | Ref to the underlying HTML video element. |
 
 
 ## Styling
