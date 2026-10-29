@@ -7,20 +7,19 @@ function App() {
 
   return (
     <>
-      <div ref={ref}>
-        <AutoplayVideo
-          src="/example-assets/example-video.mp4"
-          posterImg="/example-assets/example-fallback.jpg"
-          description="This is a description of the video."
-          prefersReducedMotion={false}
-          renderReducedMotionFallback={() => (
-            <img
-              src="/example-assets/example-fallback.jpg"
-              alt="Description of the fallback image."
-            />
-          )}
-        />
-      </div>
+      <AutoplayVideo
+        ref={ref}
+        src="/example-assets/example-video.mp4"
+        posterImg="/example-assets/example-fallback.jpg"
+        description="This is a description of the video."
+        prefersReducedMotion={false}
+        renderReducedMotionFallback={() => (
+          <img
+            src="/example-assets/example-fallback.jpg"
+            alt="Description of the fallback image."
+          />
+        )}
+      />
 
       <DebugStats elementRef={ref} />
     </>
@@ -33,7 +32,11 @@ function App() {
  * currentTime property will be displayed, and should only be incrementing
  * when the video is considered to be "in view" (per the ovbserver options).
  */
-function DebugStats({ elementRef }: { elementRef: React.RefObject<HTMLDivElement> }) {
+function DebugStats({
+  elementRef,
+}: {
+  elementRef: React.RefObject<HTMLDivElement | null>
+}) {
   const rafId = useRef<number>(0)
   const timeRef = useRef<HTMLTableCellElement | null>(null)
 
