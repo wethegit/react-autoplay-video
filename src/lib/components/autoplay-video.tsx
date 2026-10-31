@@ -1,11 +1,26 @@
 "use client"
 
-import { useEffect, useId, useRef, useState } from "react"
+import { useEffect, useId, useMemo, useRef, useState } from "react"
 import { useInView } from "@wethegit/react-hooks"
 
 import { classnames } from "../utils/classnames"
+import { mergeRefs } from "../utils/merge-refs"
 
 import styles from "./autoplay-video.module.css"
+
+type VideoProps = Omit<
+  React.ComponentPropsWithoutRef<"video">,
+  | "aria-describedby"
+  | "autoPlay"
+  | "loading"
+  | "loop"
+  | "muted"
+  | "playsInline"
+  | "poster"
+  | "ref"
+  | "src"
+  | "tabIndex"
+>
 
 declare module "react" {
   interface VideoHTMLAttributes<T> extends React.HTMLAttributes<T> {
@@ -43,9 +58,27 @@ export interface AutoplayVideoProps extends React.ComponentPropsWithRef<"div"> {
    */
   src: string
   /**
-   * Whether or not to add the loading attribute to the video element.
+   * Whether to load the video source immediately or when the component enters view.
    */
   loading?: "lazy" | "eager"
+  /**
+   * IntersectionObserver options used to determine when the component is in view.
+   */
+  inViewOptions?: IntersectionObserverInit
+  /**
+   * Keep the video source attached after it enters view, even when it leaves view.
+   */
+  persistSrcAttribute?: boolean
+  /**
+   * Ref to the underlying video element.
+   */
+  videoRef?: React.Ref<HTMLVideoElement>
+  /**
+   * Additional props to apply to the underlying video element.
+   * Playback, source, loading, and accessibility props are managed by this component.
+   * A provided className is combined with the component's media class.
+   */
+  videoProps?: VideoProps
 }
 
 /**
@@ -62,52 +95,58 @@ export function AutoplayVideo({
   src,
   loop = true,
   loading,
+  inViewOptions,
+  persistSrcAttribute = false,
+  videoRef,
+  videoProps,
+  ref: rootRef,
   ...props
 }: AutoplayVideoProps) {
-  const [srcAdded, setSrcAdded] = useState(loading === "eager")
-  const [setInViewRef, isInView] = useInView<HTMLDivElement>(0)
+  const [setInViewRef, isInView] = useInView<HTMLDivElement>(inViewOptions ?? 0)
+  const [hasBeenInView, setHasBeenInView] = useState(false)
   const descriptionID = useId()
-  const videoRef = useRef<HTMLVideoElement | null>(null)
+  const internalVideoRef = useRef<HTMLVideoElement | null>(null)
 
-  const pauseVideo = () => {
-    const video = videoRef?.current
-    if (!video) return
-    video.pause()
-  }
+  if (isInView && !hasBeenInView) setHasBeenInView(true)
 
-  const playVideo = () => {
-    const video = videoRef?.current
-    if (!video || paused) return
-    video.play()
-  }
+  const srcAdded =
+    loading === "eager" || isInView || (persistSrcAttribute && hasBeenInView)
 
-  // Set a flag to load the content (video or fallback), based on its visibility.
+  // This just handles all the possible ways developers might pass in a ref.
+  const setRootRef = useMemo(
+    () => mergeRefs(setInViewRef, rootRef),
+    [setInViewRef, rootRef]
+  )
+
+  const setVideoRef = useMemo(
+    () => mergeRefs<HTMLVideoElement>(internalVideoRef, videoRef),
+    [videoRef]
+  )
+
   useEffect(() => {
-    if (loading === "eager") {
-      setSrcAdded(true)
+    const video = internalVideoRef.current
+    if (!video) return
+
+    if (!srcAdded) {
+      // Now that src attribute is gone, we're resetting the element to save bandwidth.
+      video.load()
       return
     }
 
-    setSrcAdded(isInView)
-  }, [isInView, loading])
+    if (paused || !isInView) {
+      video.pause()
+      return
+    }
 
-  // Ensure the video does not continue to play when off-screen.
-  // Play/pause the video based on the `paused` override prop.
-  useEffect(() => {
-    if (!srcAdded) return
-
-    if (paused) pauseVideo()
-    else if (isInView && !paused) playVideo()
-    else pauseVideo()
-
-    /* eslint-disable-next-line */
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    video.play().catch(() => {})
   }, [isInView, srcAdded, paused, prefersReducedMotion])
 
   return (
     <div
       className={classnames([styles["autoplay-video"], className])}
       {...props}
-      ref={setInViewRef}
+      ref={setRootRef}
     >
       {prefersReducedMotion && typeof renderReducedMotionFallback === "function" ? (
         <div className={styles["autoplay-video__media"]}>
@@ -121,16 +160,20 @@ export function AutoplayVideo({
             </p>
           )}
           <video
+            {...videoProps}
             tabIndex={-1}
-            aria-describedby={descriptionID}
+            aria-describedby={description ? descriptionID : undefined}
             autoPlay
-            className={styles["autoplay-video__media"]}
+            className={classnames([
+              styles["autoplay-video__media"],
+              videoProps?.className,
+            ])}
             loading={loading}
             loop={loop}
             muted
             playsInline
             poster={posterImg}
-            ref={videoRef}
+            ref={setVideoRef}
             src={srcAdded ? src : undefined}
           />
         </>
