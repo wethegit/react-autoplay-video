@@ -1,9 +1,10 @@
 "use client"
 
-import { useCallback, useEffect, useId, useRef, useState } from "react"
+import { useEffect, useId, useMemo, useRef, useState } from "react"
 import { useInView } from "@wethegit/react-hooks"
 
 import { classnames } from "../utils/classnames"
+import { mergeRefs } from "../utils/merge-refs"
 
 import styles from "./autoplay-video.module.css"
 
@@ -67,7 +68,7 @@ export interface AutoplayVideoProps extends React.ComponentPropsWithRef<"div"> {
   /**
    * Keep the video source attached after it enters view, even when it leaves view.
    */
-  keepLoaded?: boolean
+  persistSrcAttribute?: boolean
   /**
    * Ref to the underlying video element.
    */
@@ -95,90 +96,50 @@ export function AutoplayVideo({
   loop = true,
   loading,
   inViewOptions,
-  keepLoaded = false,
+  persistSrcAttribute = false,
   videoRef,
   videoProps,
   ref: rootRef,
   ...props
 }: AutoplayVideoProps) {
-  const [srcAdded, setSrcAdded] = useState(loading === "eager")
   const [setInViewRef, isInView] = useInView<HTMLDivElement>(inViewOptions ?? 0)
+  const [hasBeenInView, setHasBeenInView] = useState(false)
   const descriptionID = useId()
   const internalVideoRef = useRef<HTMLVideoElement | null>(null)
 
-  // This just handles all the possible ways developers might pass in a ref.
-  const setRootRef = useCallback(
-    (node: HTMLDivElement | null) => {
-      if (node) setInViewRef(node)
+  if (isInView && !hasBeenInView) setHasBeenInView(true)
 
-      if (typeof rootRef === "function") {
-        // New to R19: Callback-style refs can return a cleanup function. This block catches that in case that's what has been passed in, and returns it as expected.
-        const cleanup = rootRef(node)
-        if (typeof cleanup === "function") {
-          return () => {
-            cleanup()
-          }
-        }
-      } else if (rootRef) {
-        rootRef.current = node
-      }
-    },
-    [rootRef, setInViewRef]
+  const srcAdded =
+    loading === "eager" || isInView || (persistSrcAttribute && hasBeenInView)
+
+  // This just handles all the possible ways developers might pass in a ref.
+  const setRootRef = useMemo(
+    () => mergeRefs(setInViewRef, rootRef),
+    [setInViewRef, rootRef]
   )
 
-  // Similar to the above, this just handles all forms an external ref can take.
-  const setVideoRef = useCallback(
-    (node: HTMLVideoElement | null) => {
-      internalVideoRef.current = node
-
-      if (typeof videoRef === "function") {
-        const cleanup = videoRef(node)
-        if (typeof cleanup === "function") {
-          return () => {
-            cleanup()
-            internalVideoRef.current = null
-          }
-        }
-      } else if (videoRef) {
-        videoRef.current = node
-      }
-    },
+  const setVideoRef = useMemo(
+    () => mergeRefs<HTMLVideoElement>(internalVideoRef, videoRef),
     [videoRef]
   )
 
-  const pauseVideo = () => {
+  useEffect(() => {
     const video = internalVideoRef.current
     if (!video) return
-    video.pause()
-  }
 
-  const playVideo = () => {
-    const video = internalVideoRef.current
-    if (!video || paused) return
-    video.play()
-  }
-
-  // Set a flag to load the content (video or fallback), based on its visibility.
-  useEffect(() => {
-    if (loading === "eager") {
-      setSrcAdded(true)
+    if (!srcAdded) {
+      // Now that src attribute is gone, we're resetting the element to save bandwidth.
+      video.load()
       return
     }
 
-    if (isInView) setSrcAdded(true)
-    else if (!keepLoaded) setSrcAdded(false)
-  }, [isInView, keepLoaded, loading])
+    if (paused || !isInView) {
+      video.pause()
+      return
+    }
 
-  // Ensure the video does not continue to play when off-screen.
-  // Play/pause the video based on the `paused` override prop.
-  useEffect(() => {
-    if (!srcAdded) return
-
-    if (paused) pauseVideo()
-    else if (isInView && !paused) playVideo()
-    else pauseVideo()
-
-    /* eslint-disable-next-line */
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    video.play().catch(() => {})
   }, [isInView, srcAdded, paused, prefersReducedMotion])
 
   return (
@@ -201,7 +162,7 @@ export function AutoplayVideo({
           <video
             {...videoProps}
             tabIndex={-1}
-            aria-describedby={descriptionID}
+            aria-describedby={description ? descriptionID : undefined}
             autoPlay
             className={classnames([
               styles["autoplay-video__media"],
