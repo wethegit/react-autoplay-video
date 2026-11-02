@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useId, useMemo, useRef, useState } from "react"
+import { useEffect, useId, useMemo, useRef } from "react"
 import { useInView } from "@wethegit/react-hooks"
 
 import { classnames } from "../utils/classnames"
@@ -103,11 +103,15 @@ export function AutoplayVideo({
   ...props
 }: AutoplayVideoProps) {
   const [setInViewRef, isInView] = useInView<HTMLDivElement>(inViewOptions ?? 0)
-  const [hasBeenInView, setHasBeenInView] = useState(false)
+  const hasBeenInViewRef = useRef(false)
   const descriptionID = useId()
   const internalVideoRef = useRef<HTMLVideoElement | null>(null)
 
-  if (isInView && !hasBeenInView) setHasBeenInView(true)
+  const hasBeenInView = isInView || hasBeenInViewRef.current
+
+  if (isInView) {
+    hasBeenInViewRef.current = true
+  }
 
   const srcAdded =
     loading === "eager" || isInView || (persistSrcAttribute && hasBeenInView)
