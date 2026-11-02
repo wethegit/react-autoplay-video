@@ -98,6 +98,6 @@
   "dependencies": {
     "@changesets/changelog-github": "~1.0.1",
     "@changesets/cli": "~3.0.3",
-    "@wethegit/react-hooks": "^3.1.1"
+    "@wethegit/react-hooks": "~3.1.1"
   }
 }
