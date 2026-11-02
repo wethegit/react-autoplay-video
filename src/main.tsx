@@ -1,9 +1,20 @@
 import React, { useCallback, useEffect, useRef } from "react"
 import ReactDOM from "react-dom/client"
+import { UserPreferencesProvider, useUserPrefs } from "@wethegit/react-hooks"
+
 import { AutoplayVideo } from "./lib"
 
 function App() {
+  return (
+    <UserPreferencesProvider>
+      <AutoplayVideoDemo />
+    </UserPreferencesProvider>
+  )
+}
+
+function AutoplayVideoDemo() {
   const ref = useRef<HTMLDivElement | null>(null)
+  const { prefersReducedMotion } = useUserPrefs()
 
   return (
     <>
@@ -12,7 +23,11 @@ function App() {
         src="/example-assets/example-video.mp4"
         posterImg="/example-assets/example-fallback.jpg"
         description="This is a description of the video."
-        prefersReducedMotion={false}
+        // inViewOptions={{ threshold: 0.4 }}
+        // persistSrcAttribute
+        // loading="lazy"
+        // videoProps={{ controls: true }}
+        prefersReducedMotion={prefersReducedMotion ?? false}
         renderReducedMotionFallback={() => (
           <img
             src="/example-assets/example-fallback.jpg"
