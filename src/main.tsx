@@ -27,6 +27,7 @@ function AutoplayVideoDemo() {
         // persistSrcAttribute
         // loading="lazy"
         // videoProps={{ controls: true }}
+        // paused
         prefersReducedMotion={prefersReducedMotion ?? false}
         renderReducedMotionFallback={() => (
           <img
