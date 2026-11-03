@@ -38,7 +38,7 @@ const YourComponent = () => {
       posterImg="your-poster-image.jpg"
       description="This is a description of the video."
       prefersReducedMotion={prefersReducedMotion}
-      style={{'--aspect-ratio': 'calc((9 / 16) * 100%)'}}
+      style={{ "--aspect-ratio": "calc((9 / 16) * 100%)" }}
       renderReducedMotionFallback={() => (
         <img src="your-fallback-image.jpg" alt="Description of the fallback image." />
       )}
@@ -46,27 +46,27 @@ const YourComponent = () => {
   )
 }
 ```
+
 💡 Note that the inline styles in this snippet are just for the sake of brevity. Don't use inline styles if you don't have to.
 
 ## Props
 
-| Prop                        | Type                       | Default value | Description |
-| --------------------------- | -------------------------- | ------------- | ----------- |
-| className                   | String                     |               | Class name applied to the wrapper element. |
-| description                 | String                     | `""`          | Video description rendered accessibly and connected to the video with `aria-describedby`. |
-| inViewOptions               | `IntersectionObserverInit` | `{ threshold: 0 }` | Options passed to `IntersectionObserver` to define when the wrapper counts as in view. For example, set `rootMargin` to start loading before it enters the viewport. |
-| keepLoaded                  | Boolean                    | `false`       | Keep the source attached after the video has entered view once. By default, the source is removed when it leaves view. |
-| loading                     | `"lazy" \| "eager"`        | `"lazy"`      | Set to `"eager"` to attach the source immediately. Lazy loading attaches it when the component enters view. |
-| loop                        | Boolean                    | `true`        | Whether the video loops. |
-| paused                      | Boolean                    | `false`       | Whether playback should be paused. |
-| posterImg                   | String                     |               | Value for the video element's `poster` attribute. |
-| prefersReducedMotion        | Boolean                    | `false`       | Render `renderReducedMotionFallback` instead of the video when true. |
-| ref                         | `React.Ref<HTMLDivElement>` |               | Ref to the wrapper element. |
-| renderReducedMotionFallback | Function                   |               | Render prop for alternative content when the user prefers reduced motion. |
-| src                         | String                     |               | Video source file. |
-| videoProps                  | Video attributes | | Additional video props or attributes for the HTML Video element. Playback, source, loading, and accessibility props are managed by this component, so you can't override those. |
-| videoRef                    | `React.Ref<HTMLVideoElement>` |             | Ref to the underlying HTML video element. |
-
+| Prop                        | Type                          | Default value      | Description                                                                                                                                                                     |
+| --------------------------- | ----------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| className                   | String                        |                    | Class name applied to the wrapper element.                                                                                                                                      |
+| description                 | String                        | `""`               | Video description rendered accessibly and connected to the video with `aria-describedby`.                                                                                       |
+| inViewOptions               | `IntersectionObserverInit`    | `{ threshold: 0 }` | Options passed to `IntersectionObserver` to define when the wrapper counts as in view. For example, set `rootMargin` to start loading before it enters the viewport.            |
+| persistSrcAttribute         | Boolean                       | `false`            | Keep the source attached after the video has entered view once. By default, the source is removed when it leaves view.                                                          |
+| loading                     | `"lazy" \| "eager"`           | `"lazy"`           | Set to `"eager"` to attach the source immediately. Lazy loading attaches it when the component enters view.                                                                     |
+| loop                        | Boolean                       | `true`             | Whether the video loops.                                                                                                                                                        |
+| paused                      | Boolean                       | `false`            | Whether playback should be paused.                                                                                                                                              |
+| posterImg                   | String                        |                    | Value for the video element's `poster` attribute.                                                                                                                               |
+| prefersReducedMotion        | Boolean                       | `false`            | Render `renderReducedMotionFallback` instead of the video when true.                                                                                                            |
+| ref                         | `React.Ref<HTMLDivElement>`   |                    | Ref to the wrapper element.                                                                                                                                                     |
+| renderReducedMotionFallback | Function                      |                    | Render prop for alternative content when the user prefers reduced motion.                                                                                                       |
+| src                         | String                        |                    | Video source file.                                                                                                                                                              |
+| videoProps                  | Video attributes              |                    | Additional video props or attributes for the HTML Video element. Playback, source, loading, and accessibility props are managed by this component, so you can't override those. |
+| videoRef                    | `React.Ref<HTMLVideoElement>` |                    | Ref to the underlying HTML video element.                                                                                                                                       |
 
 ## Styling
 
