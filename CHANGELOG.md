@@ -1,5 +1,19 @@
 # @wethegit/react-autoplay-video
 
+## 3.1.0
+
+### Minor Changes
+
+- 1b2c256: Removes deprecated CSS "clip" declaration in favor of "clip-path". This applies to the visually-hidden CSS helper class.
+- d8cc1fd: Improves developer experience by adding the following:
+  - Allow for persisting of `src` attribute, even when out of viewport, via the `persistSrcAttribute` prop.
+  - Allow for custom IntersectionObserver options, via the `inViewOptions` prop.
+  - Allow for passing of props to the video element itself, via the `videoProps` prop.
+  - Expose the video element's ref via the `videoRef` prop.
+  
+  Bug fixes:
+  - Fixes an issue where the video would not render _anything_ when mounted, if `paused` was true.
+
 ## 3.0.1
 
 ### Patch Changes
